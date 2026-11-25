@@ -1,4 +1,4 @@
-# Notes S3 — BUT Informatique
+# Notes S3 - BUT Informatique
 
 Petit site pour calculer ses moyennes d'UE du semestre 3 du BUT Info et savoir quelle note il faut avoir dans les matières pas encore notées pour valider chaque UE.
 
