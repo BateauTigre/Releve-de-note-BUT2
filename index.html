@@ -104,10 +104,22 @@ button.x{padding:0;font-size:22px;color:var(--bad)}
 .gcard h2{margin:0 0 6px;font-size:28px}
 .gcard p{color:var(--mute);margin:0 0 18px}
 .gcard .stackb{display:grid;gap:10px}
-.gcard input{width:100%}
-.gcard label{display:grid;gap:4px;font-weight:700;font-size:14px}
+.gcard input[type=email],.gcard input[type=password],.gcard input[type=text]{width:100%;font:inherit;font-size:16px;color:var(--ink);background:#fff;border:1.5px solid var(--line);border-radius:12px;padding:12px 14px;min-height:50px;transition:border-color .15s,box-shadow .15s}
+.gcard input:focus{outline:none;border-color:var(--c3);box-shadow:0 0 0 4px color-mix(in srgb,var(--c3) 18%,transparent)}
+.gcard form .stackb{gap:14px}
+.pw{position:relative}.pw input{padding-right:84px}
+.pw .eye{position:absolute;right:6px;top:50%;transform:translateY(-50%);min-height:38px;padding:0 10px;border:0;background:none;color:var(--mute);font-size:14px;font-weight:700}
+.lrow{display:flex;justify-content:flex-end;margin-top:-6px}
+.lrow .link,.gfoot .link{min-height:36px;padding:0 2px;font-size:14px}
+.gsep{display:flex;align-items:center;gap:10px;color:var(--mute);font-size:13px;font-weight:600;margin:4px 0}
+.gsep::before,.gsep::after{content:"";flex:1;height:1px;background:var(--line)}
+.gfoot{display:flex;justify-content:center;margin-top:6px}
+.gcard .msg:empty{display:none}
+.gcard .msg{margin-top:14px;padding:10px 12px;border-radius:10px;background:var(--soft)}
+.gcard .msg.err{background:color-mix(in srgb,var(--c5) 12%,#fff)}
+.gcard label{display:grid;gap:6px;font-weight:700;font-size:14px}
 .primary{background:var(--grad);color:#fff;border:0;font-weight:800;text-shadow:0 1px 1px #0003}
-.link{background:none;border:0;color:var(--mute);text-decoration:underline;font-weight:600}
+.link{background:none;border:0;color:var(--mute);text-decoration:underline;text-underline-offset:3px;font-weight:600;cursor:pointer}.link:hover{color:var(--ink)}
 .msg{min-height:1.5em;font-size:14px;font-weight:600;margin:4px 0 0}
 .msg.err{color:#b23a33}.msg.ok{color:#3b302b}
 .gicon{width:56px;height:56px;margin-bottom:12px}
@@ -127,19 +139,40 @@ button.x{padding:0;font-size:22px;color:var(--bad)}
         <button class="primary" id="gLogin">Se connecter</button>
         <button id="gGuest">Continuer en tant qu'invité</button>
       </div>
-      <p class="msg" style="margin-top:12px">En invité, tes notes restent seulement sur cet appareil.</p>
+      <p class="note-g" style="margin:14px 0 0;color:var(--mute);font-size:14px;text-align:center">En invité, tes notes restent seulement sur cet appareil.</p>
     </div>
     <form id="gForm" hidden novalidate>
       <h2 id="gTitle">Connexion</h2>
       <p id="gSub">Avec ton email et ton mot de passe.</p>
       <div class="stackb">
         <label>Email<input type="email" id="gEmail" autocomplete="email" required></label>
-        <label>Mot de passe<input type="password" id="gPass" autocomplete="current-password" minlength="6" required></label>
+        <label>Mot de passe<span class="pw"><input type="password" id="gPass" autocomplete="current-password" minlength="6" required><button type="button" class="eye" data-eye="gPass">Afficher</button></span></label>
+        <div class="lrow"><button type="button" class="link" id="gForgot">Mot de passe oublié ?</button></div>
         <button class="primary" type="submit" id="gSubmit">Se connecter</button>
-        <button type="button" class="link" id="gSwitch">Pas de compte ? Créer un compte</button>
-        <button type="button" class="link" id="gBack">Retour</button>
+        <div class="gsep">ou</div>
+        <button type="button" id="gSwitch">Créer un compte</button>
       </div>
+      <div class="gfoot"><button type="button" class="link" id="gBack">← Retour</button></div>
       <p class="msg" id="gMsg" role="status"></p>
+    </form>
+    <form id="gReset" hidden novalidate>
+      <h2>Mot de passe oublié</h2>
+      <p>Mets ton email, tu recevras un lien pour choisir un nouveau mot de passe.</p>
+      <div class="stackb">
+        <label>Email<input type="email" id="rEmail" autocomplete="email" required></label>
+        <button class="primary" type="submit">Envoyer le lien</button>
+      </div>
+      <div class="gfoot"><button type="button" class="link" id="rBack">← Retour à la connexion</button></div>
+      <p class="msg" id="rMsg" role="status"></p>
+    </form>
+    <form id="gNew" hidden novalidate>
+      <h2>Nouveau mot de passe</h2>
+      <p>Choisis ton nouveau mot de passe (6 caractères minimum).</p>
+      <div class="stackb">
+        <label>Nouveau mot de passe<span class="pw"><input type="password" id="nPass" autocomplete="new-password" minlength="6" required><button type="button" class="eye" data-eye="nPass">Afficher</button></span></label>
+        <button class="primary" type="submit">Enregistrer</button>
+      </div>
+      <p class="msg" id="nMsg" role="status"></p>
     </form>
   </div>
 </div>
@@ -302,23 +335,43 @@ const refresh=()=>{renderRes();update()};
 /* ---------- écran d'accueil ---------- */
 let signup=false;
 const gMsg=(t,err)=>{$('gMsg').textContent=t;$('gMsg').className='msg'+(t?(err?' err':' ok'):'')};
-function showGate(){$('gate').hidden=false;$('gChoice').hidden=false;$('gForm').hidden=true;gMsg('')}
-function showForm(){$('gChoice').hidden=true;$('gForm').hidden=false;setSignup(false);
+const panes=['gChoice','gForm','gReset','gNew'];
+const showPane=id=>{$('gate').hidden=false;panes.forEach(p=>$(p).hidden=p!==id)};
+function showGate(){showPane('gChoice');gMsg('')}
+function showForm(){showPane('gForm');setSignup(false);gMsg('');
   if(!sb)gMsg("La connexion n'est pas encore configurée sur ce site. Tu peux continuer en invité.",true);setTimeout(()=>$('gEmail').focus(),50)}
 function setSignup(v){signup=v;$('gTitle').textContent=v?'Créer un compte':'Connexion';$('gSubmit').textContent=v?'Créer mon compte':'Se connecter';
-  $('gSwitch').textContent=v?"J'ai déjà un compte":'Pas de compte ? Créer un compte';$('gPass').autocomplete=v?'new-password':'current-password';$('gSub').textContent=v?'6 caractères minimum pour le mot de passe.':'Avec ton email et ton mot de passe.'}
+  $('gSwitch').textContent=v?"J'ai déjà un compte":'Créer un compte';$('gForgot').parentNode.hidden=v;$('gPass').autocomplete=v?'new-password':'current-password';$('gSub').textContent=v?'6 caractères minimum pour le mot de passe.':'Avec ton email et ton mot de passe.'}
 function enterGuest(){mode='guest';user=null;S=clean(lsGet(GKEY));setSync('');$('gate').hidden=true;refresh()}
 async function enterUser(u){user=u;mode='user';setSync('Chargement…');
   try{const remote=await pull();
     if(remote)S=clean(remote);
     else{S=clean(lsGet(GKEY));await push()}
-    setSync('Enregistré')}catch(e){setSync('Hors ligne')}
+    setSync('Enregistré')}catch(e){console.error('Supabase :',e);setSync('Hors ligne')}
   $('gate').hidden=true;refresh()}
 
 $('gLogin').addEventListener('click',showForm);
+document.querySelectorAll('[data-eye]').forEach(b=>b.addEventListener('click',()=>{const i=$(b.dataset.eye),show=i.type==='password';i.type=show?'text':'password';b.textContent=show?'Masquer':'Afficher'}));
 $('gGuest').addEventListener('click',enterGuest);
-$('gBack').addEventListener('click',()=>{$('gChoice').hidden=false;$('gForm').hidden=true;gMsg('')});
+$('gBack').addEventListener('click',showGate);
 $('gSwitch').addEventListener('click',()=>{setSignup(!signup);gMsg('')});
+$('gForgot').addEventListener('click',()=>{showPane('gReset');$('rMsg').textContent='';$('rEmail').value=$('gEmail').value.trim();setTimeout(()=>$('rEmail').focus(),50)});
+$('rBack').addEventListener('click',showForm);
+$('gReset').addEventListener('submit',async e=>{e.preventDefault();const m=$('rMsg');
+  if(!sb){m.className='msg err';m.textContent="La connexion n'est pas configurée sur ce site.";return}
+  const email=$('rEmail').value.trim();if(!email){m.className='msg err';m.textContent='Mets ton email.';return}
+  const btn=e.target.querySelector('button[type=submit]');btn.disabled=true;m.className='msg';m.textContent='Envoi…';
+  try{const{error}=await sb.auth.resetPasswordForEmail(email,{redirectTo:location.origin+location.pathname});
+    m.className=error?'msg err':'msg ok';m.textContent=error?error.message:'Si un compte existe avec cet email, tu vas recevoir un lien. Pense à regarder tes spams.';
+  }catch(err){m.className='msg err';m.textContent='Impossible de joindre le serveur.'}
+  btn.disabled=false;});
+$('gNew').addEventListener('submit',async e=>{e.preventDefault();const m=$('nMsg'),pass=$('nPass').value;
+  if(pass.length<6){m.className='msg err';m.textContent='6 caractères minimum.';return}
+  const btn=e.target.querySelector('button[type=submit]');btn.disabled=true;m.className='msg';m.textContent='Enregistrement…';
+  try{const{data,error}=await sb.auth.updateUser({password:pass});
+    if(error){m.className='msg err';m.textContent=error.message;btn.disabled=false}
+    else{$('nPass').value='';try{history.replaceState(null,'',location.pathname+location.search)}catch(e){}await enterUser(data.user)}
+  }catch(err){m.className='msg err';m.textContent='Impossible de joindre le serveur.';btn.disabled=false}});
 $('gForm').addEventListener('submit',async e=>{e.preventDefault();
   if(!sb){gMsg("La connexion n'est pas encore configurée sur ce site.",true);return}
   const email=$('gEmail').value.trim(),password=$('gPass').value;
@@ -362,9 +415,14 @@ document.body.addEventListener('click',e=>{const b=e.target.closest('button');if
 
 /* ---------- démarrage ---------- */
 renderUE();renderMat();renderRes();update();
+let recovering=false;
+if(sb)sb.auth.onAuthStateChange((ev)=>{if(ev==='PASSWORD_RECOVERY'){recovering=true;showPane('gNew');$('nMsg').textContent='';setTimeout(()=>$('nPass').focus(),50)}});
 (async()=>{
-  if(sb){try{const{data}=await sb.auth.getSession();if(data&&data.session){await enterUser(data.session.user);return}}catch(e){}}
-  showGate();
+  if(sb){
+    if(/type=recovery/.test(location.hash)){showPane('gNew');return}
+    try{const{data}=await sb.auth.getSession();if(data&&data.session&&!recovering){await enterUser(data.session.user);return}}catch(e){}
+  }
+  if(!recovering)showGate();
 })();
 }
 </script>
