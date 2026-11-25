@@ -5,7 +5,8 @@
 <meta charset="utf-8">
 <meta name="color-scheme" content="light">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Notes S3</title>
+<title>Notes BUT2</title>
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 64 64%27%3E%3Cdefs%3E%3ClinearGradient id=%27g%27 x1=%270%27 y1=%270%27 x2=%271%27 y2=%271%27%3E%3Cstop offset=%270%27 stop-color=%27%23F7AF60%27/%3E%3Cstop offset=%271%27 stop-color=%27%23F2554D%27/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width=%2764%27 height=%2764%27 rx=%2716%27 fill=%27url(%23g)%27/%3E%3Crect x=%2714%27 y=%2734%27 width=%279%27 height=%2716%27 rx=%273%27 fill=%27%23fff%27/%3E%3Crect x=%2727.5%27 y=%2724%27 width=%279%27 height=%2726%27 rx=%273%27 fill=%27%23fff%27/%3E%3Crect x=%2741%27 y=%2714%27 width=%279%27 height=%2736%27 rx=%273%27 fill=%27%23fff%27/%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;700;800&display=swap" rel="stylesheet">
 <style>
@@ -90,14 +91,60 @@ button.x{padding:0;font-size:22px;color:var(--bad)}
 }
 @media(min-width:1200px){#res{grid-template-columns:repeat(3,minmax(0,1fr))}}
 @media(max-width:600px){.sum{grid-template-columns:minmax(0,1fr)}.bar .tabs{max-width:none}}
+
+.head{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:flex-start;gap:10px}
+.acct{display:flex;align-items:center;gap:10px;flex-wrap:wrap;font-size:14px;color:var(--mute)}
+.acct b{color:var(--ink)}
+.sync{font-size:13px}
+.coefro{display:flex;justify-content:space-between;gap:8px}.coefro b{color:var(--ink)}
+.kfix{text-align:right;font-weight:700;color:var(--mute);padding-right:6px}
+.gate{position:fixed;inset:0;z-index:10;background:var(--bg);display:grid;place-items:center;padding:20px;overflow-y:auto}
+.gcard{width:min(100%,420px);background:var(--card);border:1px solid var(--line);border-radius:20px;padding:28px 22px;position:relative;overflow:hidden;box-shadow:0 10px 30px #7a3a1a14}
+.gcard::before{content:"";position:absolute;inset:0 0 auto;height:6px;background:var(--grad)}
+.gcard h2{margin:0 0 6px;font-size:28px}
+.gcard p{color:var(--mute);margin:0 0 18px}
+.gcard .stackb{display:grid;gap:10px}
+.gcard input{width:100%}
+.gcard label{display:grid;gap:4px;font-weight:700;font-size:14px}
+.primary{background:var(--grad);color:#fff;border:0;font-weight:800;text-shadow:0 1px 1px #0003}
+.link{background:none;border:0;color:var(--mute);text-decoration:underline;font-weight:600}
+.msg{min-height:1.5em;font-size:14px;font-weight:600;margin:4px 0 0}
+.msg.err{color:#b23a33}.msg.ok{color:#3b302b}
+.gicon{width:56px;height:56px;margin-bottom:12px}
 [hidden]{display:none!important}
 @media(max-width:420px){.evh,.ev{grid-template-columns:minmax(0,1fr) 4.8em 3.9em 40px}input[type=number]{width:4.8em}.ev .k{width:3.9em}}
 @media(prefers-reduced-motion:reduce){.fill,.switch input,.switch input::after{transition:none}}
 </style>
 </head>
 <body>
+<div class="gate" id="gate" hidden>
+  <div class="gcard">
+    <svg class="gicon" viewBox="0 0 64 64" aria-hidden="true"><defs><linearGradient id="gg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#F7AF60"/><stop offset="1" stop-color="#F2554D"/></linearGradient></defs><rect width="64" height="64" rx="16" fill="url(#gg)"/><rect x="14" y="34" width="9" height="16" rx="3" fill="#fff"/><rect x="27.5" y="24" width="9" height="26" rx="3" fill="#fff"/><rect x="41" y="14" width="9" height="36" rx="3" fill="#fff"/></svg>
+    <div id="gChoice">
+      <h2>Notes BUT2</h2>
+      <p>Calcule tes moyennes d'UE du BUT Info. Connecte-toi pour retrouver tes notes sur tous tes appareils.</p>
+      <div class="stackb">
+        <button class="primary" id="gLogin">Se connecter</button>
+        <button id="gGuest">Continuer en tant qu'invité</button>
+      </div>
+      <p class="msg" style="margin-top:12px">En invité, tes notes restent seulement sur cet appareil.</p>
+    </div>
+    <form id="gForm" hidden novalidate>
+      <h2 id="gTitle">Connexion</h2>
+      <p id="gSub">Avec ton email et ton mot de passe.</p>
+      <div class="stackb">
+        <label>Email<input type="email" id="gEmail" autocomplete="email" required></label>
+        <label>Mot de passe<input type="password" id="gPass" autocomplete="current-password" minlength="6" required></label>
+        <button class="primary" type="submit" id="gSubmit">Se connecter</button>
+        <button type="button" class="link" id="gSwitch">Pas de compte ? Créer un compte</button>
+        <button type="button" class="link" id="gBack">Retour</button>
+      </div>
+      <p class="msg" id="gMsg" role="status"></p>
+    </form>
+  </div>
+</div>
 <div class="wrap">
-  <h1>Mes notes</h1>
+  <div class="head"><h1>Mes notes</h1><div class="acct"><span id="who"></span><span class="sync" id="sync"></span><button id="authBtn"></button></div></div>
   <div class="bar">
     <div class="tabs" role="tablist">
       <button role="tab" data-sem="3">Semestre 3</button>
@@ -139,13 +186,19 @@ button.x{padding:0;font-size:22px;color:var(--bad)}
 
   <div id="v4" hidden><div class="card s4"><p>Le semestre 4 n'a pas commencé.</p></div></div>
 </div>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.97.0"></script>
 <script>
 {
-const D=(id,n,off,ev)=>({id,n,off,ev:ev||[]});
-const RES=[D('R3.01','Développement web'),D('R3.02','Algos corrects et efficaces'),D('R3.03','Analyse',null,[['DS',null,1],['TD',null,1]]),
-D('R3.04','Design Patterns',null,[['QCM n°1',null,1],['QCM n°2',null,1],['QCM n°3',null,1],['QCM n°4',null,1],['Contrôle de connaissance',null,2],['Étude de cas',null,3],['Test machine partie 1',null,5],['Test machine partie 2',null,2]]),
+/* ====== Supabase : colle ici l'URL du projet et la clé publique (anon / publishable) ====== */
+const SUPABASE_URL='https://obhlusnjddoqdrtamaaf.supabase.co';
+const SUPABASE_KEY='sb_publishable_p7xglANI9CvSJw1y5upU_Q_8xS-QSXn';
+/* ========================================================================================== */
+
+const D=(id,n,ev)=>({id,n,ev:ev||[]});
+const RES=[D('R3.01','Développement web'),D('R3.02','Algos corrects et efficaces'),D('R3.03','Analyse',[['DS',1],['TD',1]]),
+D('R3.04','Design Patterns',[['QCM n°1',1],['QCM n°2',1],['QCM n°3',1],['QCM n°4',1],['Contrôle de connaissance',2],['Étude de cas',3],['Test machine partie 1',5],['Test machine partie 2',2]]),
 D('R3.05','Programmation système'),D('R3.06','Architecture des réseaux'),D('R3.07','SQL et programmation'),D('R3.08','Probabilités'),D('R3.09','Cryptographie et sécurité'),D('R3.10','Management des SI'),
-D('R3.11','Droit des contrats et du numérique',null,[['Devoir surveillé n°1',null,1]]),D('R3.12','Anglais'),D('R3.13','Communication',null,[['TD1',null,1],['TD2',null,1]]),D('R3.14','PPP',null,[['Évaluation',null,1]]),
+D('R3.11','Droit des contrats et du numérique',[['Devoir surveillé n°1',1]]),D('R3.12','Anglais'),D('R3.13','Communication',[['TD1',1],['TD2',1]]),D('R3.14','PPP',[['Évaluation',1]]),
 D('AL.3.10','IA générative'),D('S3.Real.01',"SAÉ Développement d'une application")];
 const RM=Object.fromEntries(RES.map(r=>[r.id,r]));
 const UES=[
@@ -155,13 +208,23 @@ const UES=[
 {id:'UE3.4',n:"Gérer des données de l'information",c:{'R3.01':10,'R3.07':25,'R3.08':5,'R3.09':5,'R3.10':5,'R3.11':10,'AL.3.10':7,'S3.Real.01':40}},
 {id:'UE3.5',n:'Conduire un projet',c:{'R3.03':10,'R3.04':10,'R3.10':5,'R3.11':10,'R3.12':7,'R3.13':7,'AL.3.10':12,'S3.Real.01':40}},
 {id:'UE3.6',n:'Travailler dans une équipe informatique',c:{'R3.04':5,'R3.10':10,'R3.12':8,'R3.13':10,'R3.14':15,'AL.3.10':11,'S3.Real.01':40}}];
-const KEY='notes-s3-v3';
-const synInit=()=>Object.fromEntries(RES.map(r=>[r.id,r.off]));
-const resInit=()=>Object.fromEntries(RES.map(r=>[r.id,{ev:r.ev.map(e=>[...e]),custom:false}]));
-const fresh=()=>({res:resInit(),syn:synInit(),c:Object.fromEntries(UES.map(u=>[u.id,{...u.c}])),link:false,sem:'3',view:'syn'});
-let S=null;try{S=JSON.parse(localStorage.getItem(KEY))}catch(e){}
-if(!S||!S.res||!S.syn||!S.c)S=fresh();
-const save=()=>{try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}};
+
+/* éval = [nom, note, coef, ajoutéeParLUtilisateur] — les coefs des évals prévues ne changent pas */
+const resInit=()=>Object.fromEntries(RES.map(r=>[r.id,{ev:r.ev.map(([n,c])=>[n,null,c,false])}]));
+const synInit=()=>Object.fromEntries(RES.map(r=>[r.id,null]));
+const fresh=()=>({res:resInit(),syn:synInit(),link:false,sem:'3',view:'syn'});
+const clean=o=>{const s=fresh();if(!o||typeof o!=='object')return s;
+  if(o.syn)for(const id in s.syn){const v=o.syn[id];s.syn[id]=typeof v==='number'?Math.min(20,Math.max(0,v)):null}
+  if(o.res)for(const r of RES){const ev=o.res[r.id]&&o.res[r.id].ev;if(!Array.isArray(ev))continue;
+    const fixed=r.ev.map(([n,c],i)=>{const e=ev.find(x=>Array.isArray(x)&&!x[3]&&x[0]===n);return[n,e&&typeof e[1]==='number'?e[1]:null,c,false]});
+    const added=ev.filter(x=>Array.isArray(x)&&x[3]).map(x=>[String(x[0]||'Évaluation'),typeof x[1]==='number'?x[1]:null,typeof x[2]==='number'?x[2]:1,true]);
+    s.res[r.id].ev=fixed.concat(added)}
+  s.link=!!o.link;s.sem=o.sem==='4'?'4':'3';s.view=o.view==='notes'?'notes':'syn';return s};
+
+const GKEY='notes-s3-invite';
+const lsGet=k=>{try{return JSON.parse(localStorage.getItem(k))}catch(e){return null}};
+const lsSet=(k,v)=>{try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}};
+let S=clean(lsGet(GKEY)),mode=null,user=null,timer=null;
 const $=id=>document.getElementById(id);
 const k=id=>id.replace(/\W/g,'_');
 const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
@@ -171,34 +234,43 @@ const clamp=v=>Math.min(20,Math.max(0,v));
 const E=1e-9;
 const col=v=>v==null?'var(--mute)':v>=10-E?'var(--ok)':v>=8-E?'var(--mid)':'var(--bad)';
 
-/* Mes notes : moyenne d'une matière à partir de ses évals */
-const detAvg=id=>{const r=RM[id],s=S.res[id];if(!s.custom&&r.off!=null)return r.off;let a=0,c=0;for(const[,n,w]of s.ev)if(n!=null&&w>0){a+=n*w;c+=w}return c?a/c:null};
-/* Synthèse : note de la matière (reliée ou non) */
+/* ---------- Supabase ---------- */
+let sb=null;
+try{if(SUPABASE_URL&&SUPABASE_KEY&&window.supabase)sb=window.supabase.createClient(SUPABASE_URL,SUPABASE_KEY)}catch(e){sb=null}
+const setSync=t=>{$('sync').textContent=t};
+async function pull(){const{data,error}=await sb.from('notes_s3').select('data').eq('user_id',user.id).maybeSingle();if(error)throw error;return data?data.data:null}
+async function push(){if(!sb||!user)return;setSync('Enregistrement…');
+  const{error}=await sb.from('notes_s3').upsert({user_id:user.id,data:S,updated_at:new Date().toISOString()});
+  setSync(error?'Pas enregistré (connexion ?)':'Enregistré')}
+const save=()=>{if(mode==='user'){clearTimeout(timer);setSync('…');timer=setTimeout(push,700)}else lsSet(GKEY,S)};
+
+/* ---------- calculs ---------- */
+const detAvg=id=>{let a=0,c=0;for(const[,n,w]of S.res[id].ev)if(n!=null&&w>0){a+=n*w;c+=w}return c?a/c:null};
 const locked=id=>S.link&&detAvg(id)!=null;
 const synNote=id=>locked(id)?detAvg(id):S.syn[id];
-const stat=u=>{let ks=0,kc=0,rc=0;const rest=[];for(const[id,w]of Object.entries(S.c[u.id])){if(!(w>0))continue;const a=synNote(id);if(a==null){rc+=w;rest.push(id)}else{ks+=a*w;kc+=w}}return{ks,kc,rc,rest,moy:kc?ks/kc:null}};
+const stat=u=>{let ks=0,kc=0,rc=0;const rest=[];for(const[id,w]of Object.entries(u.c)){const a=synNote(id);if(a==null){rc+=w;rest.push(id)}else{ks+=a*w;kc+=w}}return{ks,kc,rc,rest,moy:kc?ks/kc:null}};
 const need=(s,T)=>s.rc?(T*(s.kc+s.rc)-s.ks)/s.rc:null;
 
+/* ---------- affichage ---------- */
 function renderUE(){
   $('ues').innerHTML=UES.map(u=>`<div class="card ue"><div class="hd"><div><div class="id">${u.id}</div><h3>${esc(u.n)}</h3><span class="st" id="st-${k(u.id)}"></span></div><div class="moy" id="m-${k(u.id)}"></div></div>
   <div class="track"><div class="fill" id="f-${k(u.id)}"></div><span class="mk"></span></div>
   <div id="n-${k(u.id)}"></div>
-  <details><summary>Coefficients</summary><div class="coefs">${Object.keys(u.c).map(id=>`<label>${id} · ${esc(RM[id].n)}<input type="number" inputmode="decimal" min="0" step="1" data-ue="${u.id}" data-c="${id}" value="${S.c[u.id][id]??''}"></label>`).join('')}</div></details></div>`).join('');
+  <details><summary>Coefficients</summary><div class="coefs">${Object.entries(u.c).map(([id,w])=>`<div class="coefro"><span>${id} · ${esc(RM[id].n)}</span><b>${w}</b></div>`).join('')}</div></details></div>`).join('');
 }
 function renderMat(){
   $('mat').innerHTML=RES.map(r=>`<label class="mrow"><span class="nm">${r.id}<small>${esc(r.n)}</small></span><input type="number" inputmode="decimal" min="0" max="20" step="0.01" placeholder="—" data-syn="${r.id}"></label>`).join('');
 }
 function renderRes(extra){
   const open=new Set([...document.querySelectorAll('#res details[open]')].map(d=>d.dataset.r));if(extra)open.add(extra);
-  $('res').innerHTML=RES.map(r=>{const s=S.res[r.id];return`<details class="res" data-r="${r.id}"${open.has(r.id)?' open':''}><summary><span class="nm">${r.id}<small>${esc(r.n)}</small></span><span class="tag" id="tag-${k(r.id)}"></span><span class="avg" id="avg-${k(r.id)}"></span></summary>
-  ${s.ev.length?`<div class="evh"><span>Évaluation</span><span>Note</span><span>Coef</span><span></span></div>`:'<p class="empty">Aucune évaluation</p>'}
-  ${s.ev.map((e,i)=>`<div class="ev"><input type="text" aria-label="Nom" data-r="${r.id}" data-i="${i}" data-f="0" value="${esc(e[0])}"><input type="number" inputmode="decimal" min="0" max="20" step="0.01" aria-label="Note" data-r="${r.id}" data-i="${i}" data-f="1" value="${e[1]??''}" placeholder="—"><input class="k" type="number" inputmode="decimal" min="0" step="0.5" aria-label="Coef" data-r="${r.id}" data-i="${i}" data-f="2" value="${e[2]??''}"><button class="x" aria-label="Supprimer" data-act="del" data-r="${r.id}" data-i="${i}">×</button></div>`).join('')}
-  <div class="row"><button data-act="add" data-r="${r.id}">+ Ajouter une évaluation</button>${s.custom?`<button data-act="reset" data-r="${r.id}">Réinitialiser</button>`:''}</div></details>`}).join('');
+  $('res').innerHTML=RES.map(r=>{const ev=S.res[r.id].ev;return`<details class="res" data-r="${r.id}"${open.has(r.id)?' open':''}><summary><span class="nm">${r.id}<small>${esc(r.n)}</small></span><span class="avg" id="avg-${k(r.id)}"></span></summary>
+  ${ev.length?`<div class="evh"><span>Évaluation</span><span>Note</span><span>Coef</span><span></span></div>`:'<p class="empty">Aucune évaluation</p>'}
+  ${ev.map((e,i)=>`<div class="ev">${e[3]?`<input type="text" aria-label="Nom" data-r="${r.id}" data-i="${i}" data-f="0" value="${esc(e[0])}">`:`<span>${esc(e[0])}</span>`}<input type="number" inputmode="decimal" min="0" max="20" step="0.01" aria-label="Note" data-r="${r.id}" data-i="${i}" data-f="1" value="${e[1]??''}" placeholder="—">${e[3]?`<input class="k" type="number" inputmode="decimal" min="0" step="0.5" aria-label="Coef" data-r="${r.id}" data-i="${i}" data-f="2" value="${e[2]??''}">`:`<span class="kfix">${e[2]}</span>`}${e[3]?`<button class="x" aria-label="Supprimer" data-act="del" data-r="${r.id}" data-i="${i}">×</button>`:'<span></span>'}</div>`).join('')}
+  <div class="row"><button data-act="add" data-r="${r.id}">+ Ajouter une évaluation</button></div></details>`}).join('');
 }
-const list=ids=>ids.map(id=>id).join(', ');
 function needHtml(s){
   if(!s.rc)return`<p class="need" style="color:var(--mute)">Toutes les matières ont une note.</p>`;
-  const n10=need(s,10),n8=need(s,8),who=`<span style="color:var(--mute)"> en ${list(s.rest)}</span>`;
+  const n10=need(s,10),n8=need(s,8),who=`<span style="color:var(--mute)"> en ${s.rest.join(', ')}</span>`;
   if(n10<=0)return`<p class="need"><b>10 assuré</b>, même avec 0 sur le reste.</p>`;
   if(n10>20)return`<p class="need"><b>10 impossible</b> sur cette UE.</p>`+(n8>20?`<p class="need">8 impossible aussi.</p>`:`<p class="need">Pour 8 : il te faut <b>${f(Math.max(0,n8))}</b> de moyenne${who}</p>`);
   return`<p class="need">Pour 10 : il te faut <b>${f(n10)}</b> de moyenne${who}</p>`;
@@ -210,41 +282,90 @@ function update(){
   $('link').checked=!!S.link;
   document.querySelectorAll('[data-syn]').forEach(inp=>{const id=inp.dataset.syn,l=locked(id);inp.disabled=l;inp.title=l?'Vient de Mes notes':'';
     if(document.activeElement!==inp){const v=synNote(id);inp.value=v==null?'':+v.toFixed(2)}});
-  RES.forEach(r=>{const a=detAvg(r.id),el=$('avg-'+k(r.id));el.textContent=f(a);$('tag-'+k(r.id)).textContent=S.res[r.id].custom?'modifié':''});
+  RES.forEach(r=>{$('avg-'+k(r.id)).textContent=f(detAvg(r.id))});
   let ok=0,mid=0,bad=0,none=0;
-  UES.forEach(u=>{const s=stat(u),i=k(u.id),m=s.moy;
-    $('m-'+i).textContent=f(m);const st=$('st-'+i),sc=col(m);st.textContent=m==null?'Pas de note':m>=10-E?'À 10 ou plus':m>=8-E?'Entre 8 et 10':'Sous 8';st.style.background=`color-mix(in srgb,${sc} 26%,transparent)`;st.innerHTML=`<span class="dot" style="background:${sc}"></span>`+st.textContent;
-    $('f-'+i).style.width=(m==null?0:m/20*100)+'%';$('f-'+i).style.background=col(m);
+  UES.forEach(u=>{const s=stat(u),i=k(u.id),m=s.moy,sc=col(m),st=$('st-'+i);
+    $('m-'+i).textContent=f(m);
+    st.innerHTML=`<span class="dot" style="background:${sc}"></span>`+(m==null?'Pas de note':m>=10-E?'À 10 ou plus':m>=8-E?'Entre 8 et 10':'Sous 8');
+    st.style.background=`color-mix(in srgb,${sc} 26%,transparent)`;
+    $('f-'+i).style.width=(m==null?0:m/20*100)+'%';$('f-'+i).style.background=sc;
     $('n-'+i).innerHTML=needHtml(s);
     if(m==null)none++;else if(m>=10-E)ok++;else if(m>=8-E)mid++;else bad++;});
   $('cnt').innerHTML=`${ok}<small>/6</small>`;
   const ch=(c,t,n)=>n?`<span class="chip"><span class="dot" style="background:${c}"></span>${n} ${t}</span>`:'';
   $('chips').innerHTML=ch('var(--ok)','à 10 ou plus',ok)+ch('var(--mid)','entre 8 et 10',mid)+ch('var(--bad)','sous 8',bad)+ch('var(--mute)','sans note',none);
+  $('who').innerHTML=mode==='user'?`Connecté : <b>${esc(user.email||'')}</b>`:'Invité';
+  $('authBtn').textContent=mode==='user'?'Se déconnecter':'Se connecter';
 }
-renderUE();renderMat();renderRes();update();
+const refresh=()=>{renderRes();update()};
 
+/* ---------- écran d'accueil ---------- */
+let signup=false;
+const gMsg=(t,err)=>{$('gMsg').textContent=t;$('gMsg').className='msg'+(t?(err?' err':' ok'):'')};
+function showGate(){$('gate').hidden=false;$('gChoice').hidden=false;$('gForm').hidden=true;gMsg('')}
+function showForm(){$('gChoice').hidden=true;$('gForm').hidden=false;setSignup(false);
+  if(!sb)gMsg("La connexion n'est pas encore configurée sur ce site. Tu peux continuer en invité.",true);setTimeout(()=>$('gEmail').focus(),50)}
+function setSignup(v){signup=v;$('gTitle').textContent=v?'Créer un compte':'Connexion';$('gSubmit').textContent=v?'Créer mon compte':'Se connecter';
+  $('gSwitch').textContent=v?"J'ai déjà un compte":'Pas de compte ? Créer un compte';$('gPass').autocomplete=v?'new-password':'current-password';$('gSub').textContent=v?'6 caractères minimum pour le mot de passe.':'Avec ton email et ton mot de passe.'}
+function enterGuest(){mode='guest';user=null;S=clean(lsGet(GKEY));setSync('');$('gate').hidden=true;refresh()}
+async function enterUser(u){user=u;mode='user';setSync('Chargement…');
+  try{const remote=await pull();
+    if(remote)S=clean(remote);
+    else{S=clean(lsGet(GKEY));await push()}
+    setSync('Enregistré')}catch(e){setSync('Hors ligne')}
+  $('gate').hidden=true;refresh()}
+
+$('gLogin').addEventListener('click',showForm);
+$('gGuest').addEventListener('click',enterGuest);
+$('gBack').addEventListener('click',()=>{$('gChoice').hidden=false;$('gForm').hidden=true;gMsg('')});
+$('gSwitch').addEventListener('click',()=>{setSignup(!signup);gMsg('')});
+$('gForm').addEventListener('submit',async e=>{e.preventDefault();
+  if(!sb){gMsg("La connexion n'est pas encore configurée sur ce site.",true);return}
+  const email=$('gEmail').value.trim(),password=$('gPass').value;
+  if(!email||password.length<6){gMsg('Mets un email et un mot de passe de 6 caractères minimum.',true);return}
+  $('gSubmit').disabled=true;gMsg(signup?'Création du compte…':'Connexion…');
+  try{
+    const r=signup?await sb.auth.signUp({email,password}):await sb.auth.signInWithPassword({email,password});
+    if(r.error){gMsg(r.error.message==='Invalid login credentials'?'Email ou mot de passe incorrect.':r.error.message,true)}
+    else if(!r.data.session){gMsg('Compte créé. Valide le lien reçu par email, puis connecte-toi.');setSignup(false)}
+    else{$('gPass').value='';await enterUser(r.data.session.user)}
+  }catch(err){gMsg('Impossible de joindre le serveur.',true)}
+  $('gSubmit').disabled=false;
+});
+$('authBtn').addEventListener('click',async()=>{
+  if(mode==='user'){clearTimeout(timer);await push();try{await sb.auth.signOut()}catch(e){}mode=null;user=null;S=clean(lsGet(GKEY));refresh()}
+  showGate();if(mode!=='user'&&sb)showForm()});
+
+/* ---------- saisie ---------- */
 document.body.addEventListener('input',e=>{const t=e.target,d=t.dataset;
   if(t.id==='link')S.link=t.checked;
   else if(d.syn){const v=num(t.value);S.syn[d.syn]=v==null?null:clamp(v)}
-  else if(d.c){const v=num(t.value);S.c[d.ue][d.c]=v==null?0:Math.max(0,v)}
-  else if(d.r&&d.f!=null){const s=S.res[d.r],i=+d.i;if(d.f==='0')s.ev[i][0]=t.value;else{const v=num(t.value);s.ev[i][+d.f]=v==null?null:(d.f==='1'?clamp(v):Math.max(0,v));s.custom=true}}
+  else if(d.r&&d.f!=null){const ev=S.res[d.r].ev[+d.i];if(!ev)return;
+    if(d.f==='0'&&ev[3])ev[0]=t.value;
+    else if(d.f==='1'){const v=num(t.value);ev[1]=v==null?null:clamp(v)}
+    else if(d.f==='2'&&ev[3]){const v=num(t.value);ev[2]=v==null?0:Math.max(0,v)}}
   else return;
   save();update();
 });
-document.body.addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;const d=b.dataset;
-  if(d.sem){S.sem=d.sem}
-  else if(d.view){S.view=d.view}
-  else if(b.id==='synReset'){S.syn=synInit()}
+document.body.addEventListener('click',e=>{const b=e.target.closest('button');if(!b||b.closest('#gate'))return;const d=b.dataset;
+  if(d.sem)S.sem=d.sem;
+  else if(d.view)S.view=d.view;
+  else if(b.id==='synReset')S.syn=synInit();
   else if(b.id==='resReset'){S.res=resInit();renderRes()}
-  else if(d.act){const s=S.res[d.r];
-    if(d.act==='add')s.ev.push(['Nouvelle évaluation',null,1]);
-    if(d.act==='del')s.ev.splice(+d.i,1);
-    if(d.act==='reset'){s.ev=RM[d.r].ev.map(x=>[...x]);s.custom=false}
-    else s.custom=true;
+  else if(d.act){const ev=S.res[d.r].ev;
+    if(d.act==='add')ev.push(['Nouvelle évaluation',null,1,true]);
+    if(d.act==='del'&&ev[+d.i]&&ev[+d.i][3])ev.splice(+d.i,1);
     renderRes(d.r)}
   else return;
   save();update();
 });
+
+/* ---------- démarrage ---------- */
+renderUE();renderMat();renderRes();update();
+(async()=>{
+  if(sb){try{const{data}=await sb.auth.getSession();if(data&&data.session){await enterUser(data.session.user);return}}catch(e){}}
+  showGate();
+})();
 }
 </script>
 </body>
