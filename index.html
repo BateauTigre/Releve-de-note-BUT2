@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<!-- Goubill Arthur — https://github.com/BateauTigre -->
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="color-scheme" content="light">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Notes S3</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+/* Goubill Arthur — https://github.com/BateauTigre */
+/* VOICE: calme, net, lisible d'un coup d'œil
+   IDEA: un bulletin papier beige bien rangé
+   PICTURE: une carte par UE avec sa moyenne en gros et une jauge marquée à 10
+   COLOUR and TYPE: beige, encre brune, vert validé, ambre 8-10, rouge sous 8 ; Manrope
+   LAYOUT: onglets semestre, puis Synthèse / Mes notes, une colonne sur téléphone */
+:root,:root[data-theme=dark],:root[data-theme=light]{color-scheme:light;--c1:#F7AF60;--c2:#F7995E;--c3:#F47F58;--c4:#F26A52;--c5:#F2554D;--grad:linear-gradient(90deg,var(--c1),var(--c2),var(--c3),var(--c4),var(--c5));--bg:#FBEEE3;--card:#FFF9F4;--soft:#F7E4D5;--line:#F0DCCB;--ink:#3b302b;--mute:#957f72;--acc:var(--c4);--ok:var(--c1);--mid:var(--c3);--bad:var(--c5)}
+*{box-sizing:border-box;min-width:0}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.5 Manrope,system-ui,sans-serif;overflow-x:clip}
+.wrap{max-width:1280px;margin:0 auto;padding:clamp(20px,4vw,44px) max(4vw,14px) 60px}
+h1{font-size:clamp(30px,6vw,42px);line-height:1.05;margin:0 0 18px;font-weight:800}
+h1::after{content:"";display:block;width:72px;height:6px;border-radius:6px;background:var(--grad);margin-top:10px}
+h2{font-size:22px;margin:28px 0 12px;font-weight:800}
+.tabs{display:flex;gap:6px;background:var(--soft);padding:5px;border-radius:14px;margin-bottom:14px}
+.tabs button{flex:1;border:0;background:transparent;font-weight:700;color:var(--mute)}
+.tabs button[aria-selected=true]{background:var(--card);color:var(--ink);box-shadow:inset 0 -3px 0 var(--c4),0 1px 3px #7a3a1a14}
+.sub{max-width:420px}
+button{font:inherit;min-height:44px;border-radius:10px;border:1px solid var(--line);background:var(--card);color:var(--ink);cursor:pointer;padding:0 14px}
+button:focus-visible,input:focus-visible,summary:focus-visible{outline:3px solid var(--acc);outline-offset:2px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:18px;box-shadow:0 1px 2px #7a3a1a0f}
+.sum{position:relative;overflow:hidden;padding-top:24px;display:grid;grid-template-columns:auto minmax(0,1fr);gap:8px 22px;align-items:center}
+.sum::before{content:"";position:absolute;inset:0 0 auto;height:6px;background:var(--grad)}
+.sum .big{font-size:clamp(54px,12vw,72px);font-weight:800;line-height:1}
+.sum .big small{font-size:.4em;color:var(--mute)}
+.chips{display:flex;flex-wrap:wrap;gap:6px}
+.chip{display:inline-flex;align-items:center;gap:6px;padding:4px 10px;border-radius:99px;font-size:14px;font-weight:700;background:var(--soft);white-space:nowrap}
+.dot{width:9px;height:9px;border-radius:50%}
+.rule{grid-column:1/-1;color:var(--mute);font-size:14px;margin:4px 0 0}
+.ues{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,290px),1fr));gap:12px}
+.ue .hd{display:flex;justify-content:space-between;gap:10px;align-items:start}
+.ue h3{margin:0;font-size:17px;line-height:1.25}.ue .id{color:var(--mute);font-size:13px;font-weight:600}
+.st{display:inline-flex;align-items:center;gap:6px;margin-top:8px;padding:3px 10px;border-radius:99px;font-size:13px;font-weight:700;white-space:nowrap}
+.ue .moy{flex:none;font-size:clamp(28px,3vw,34px);font-weight:800;line-height:1;white-space:nowrap;text-align:right}
+.track{position:relative;height:10px;background:var(--soft);border-radius:6px;margin:12px 0 10px}
+.fill{height:100%;border-radius:6px;transition:width .3s}
+.mk{position:absolute;top:-3px;bottom:-3px;left:50%;width:2px;background:var(--ink);opacity:.5}
+.need{margin:4px 0;font-size:15px}.need b{white-space:nowrap}
+.ue details{margin-top:6px;color:var(--mute);font-size:14px}
+summary{cursor:pointer;min-height:40px;display:flex;align-items:center;gap:8px}
+.coefs{display:grid;gap:6px}
+.coefs label{display:flex;justify-content:space-between;align-items:center;gap:8px}
+input[type=number]:focus,input[type=text]:focus{border-color:var(--c3)}
+input[type=number],input[type=text]{font:inherit;font-size:16px;color:var(--ink);background:var(--bg);border:1px solid var(--line);border-radius:10px;padding:8px 10px;min-height:44px}
+input[type=number]{width:5.4em;text-align:right;font-weight:700}
+input[type=number]{-moz-appearance:textfield;appearance:textfield}
+input[type=number]::-webkit-inner-spin-button,input[type=number]::-webkit-outer-spin-button{-webkit-appearance:none;margin:0}
+input:disabled{opacity:1;background:var(--soft);color:var(--mute)}
+.mhd{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:10px;margin:28px 0 12px}
+.mhd h2{margin:0}
+.switch{display:flex;align-items:center;gap:10px;font-weight:700;cursor:pointer;min-height:44px}
+.switch input{appearance:none;width:46px;height:26px;border-radius:99px;background:var(--line);position:relative;cursor:pointer;margin:0;transition:background .2s}
+.switch input::after{content:"";position:absolute;top:3px;left:3px;width:20px;height:20px;border-radius:50%;background:#fff;transition:left .2s}
+.switch input:checked{background:var(--c4)}.switch input:checked::after{left:23px}
+.mat{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,300px),1fr));gap:8px}
+.mrow{display:flex;align-items:center;justify-content:space-between;gap:12px;background:var(--card);border:1px solid var(--line);border-radius:12px;padding:8px 10px 8px 14px}
+.mrow .nm{font-weight:700;font-size:15px;line-height:1.25}.mrow .nm small{display:block;color:var(--mute);font-weight:600;font-size:13px}
+.res{background:var(--card);border:1px solid var(--line);border-radius:14px;margin-bottom:8px;padding:4px 14px}
+.res summary{justify-content:space-between;min-height:52px}
+.res .nm{flex:1;font-weight:700}.res .nm small{display:block;color:var(--mute);font-weight:600;font-size:13px}
+.res .avg{font-weight:800;font-size:22px;white-space:nowrap}
+.empty{color:var(--mute);font-size:15px;margin:4px 0}
+.evh,.ev{display:grid;grid-template-columns:minmax(0,1fr) 5.4em 4.4em 44px;gap:6px;align-items:center}
+.evh{color:var(--mute);font-size:13px;font-weight:600;margin-top:4px}.ev{margin:6px 0}
+.ev input[type=text]{width:100%}.ev .k{width:4.4em}
+button.x{padding:0;font-size:22px;color:var(--bad)}
+.row{display:flex;flex-wrap:wrap;gap:8px;margin:8px 0 12px}
+.tag{font-size:12px;color:var(--mid);font-weight:700}
+.s4{text-align:center;padding:60px 20px}.s4 p{font-size:22px;font-weight:800;margin:0}
+
+.bar{display:flex;flex-wrap:wrap;gap:10px;margin-bottom:14px}.bar .tabs{margin:0;flex:1 1 300px;max-width:420px}
+.sgrid{display:grid;grid-template-columns:minmax(0,1fr);gap:0 28px}
+.side .mhd{margin-top:28px}
+@media(min-width:900px){
+ .sgrid{grid-template-columns:minmax(0,1fr) minmax(300px,380px);align-items:start}
+ .side{position:sticky;top:16px;max-height:calc(100vh - 32px);overflow-y:auto;padding-right:4px}
+ .side .mhd{margin-top:0}.side .mat{grid-template-columns:minmax(0,1fr)}
+ .ues{grid-template-columns:repeat(2,minmax(0,1fr))}
+ #res{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:0 12px;align-items:start}
+}
+@media(min-width:1200px){#res{grid-template-columns:repeat(3,minmax(0,1fr))}}
+@media(max-width:600px){.sum{grid-template-columns:minmax(0,1fr)}.bar .tabs{max-width:none}}
+[hidden]{display:none!important}
+@media(max-width:420px){.evh,.ev{grid-template-columns:minmax(0,1fr) 4.8em 3.9em 40px}input[type=number]{width:4.8em}.ev .k{width:3.9em}}
+@media(prefers-reduced-motion:reduce){.fill,.switch input,.switch input::after{transition:none}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>Mes notes</h1>
+  <div class="bar">
+    <div class="tabs" role="tablist">
+      <button role="tab" data-sem="3">Semestre 3</button>
+      <button role="tab" data-sem="4">Semestre 4</button>
+    </div>
+    <div class="tabs" role="tablist" id="subtabs">
+      <button role="tab" data-view="syn">Synthèse</button>
+      <button role="tab" data-view="notes">Mes notes</button>
+    </div>
+  </div>
+
+  <div id="v3">
+
+    <div id="vsyn" class="sgrid">
+     <div>
+      <div class="card sum">
+        <div class="big" id="cnt"></div>
+        <div><div style="font-weight:800;font-size:18px">UE à 10 ou plus</div><div class="chips" id="chips" style="margin-top:8px"></div></div>
+        <p class="rule">Pour passer en BUT3 : au moins 4 compétences sur 6 à 10 et aucune sous 8 (moyenne S3 + S4).</p>
+      </div>
+      <h2>Mes UE</h2>
+      <div class="ues" id="ues"></div>
+     </div>
+     <div class="side">
+      <div class="mhd">
+        <h2>Note par matière</h2>
+        <label class="switch"><input type="checkbox" id="link"> Relier à Mes notes</label>
+      </div>
+      <div class="mat" id="mat"></div>
+      <div class="row" style="margin-top:14px"><button id="synReset">Effacer les notes</button></div>
+     </div>
+    </div>
+
+    <div id="vnotes" hidden>
+      <div id="res"></div>
+      <div class="row"><button id="resReset">Tout effacer</button></div>
+    </div>
+  </div>
+
+  <div id="v4" hidden><div class="card s4"><p>Le semestre 4 n'a pas commencé.</p></div></div>
+</div>
+<script>
+{
+const D=(id,n,off,ev)=>({id,n,off,ev:ev||[]});
+const RES=[D('R3.01','Développement web'),D('R3.02','Algos corrects et efficaces'),D('R3.03','Analyse',null,[['DS',null,1],['TD',null,1]]),
+D('R3.04','Design Patterns',null,[['QCM n°1',null,1],['QCM n°2',null,1],['QCM n°3',null,1],['QCM n°4',null,1],['Contrôle de connaissance',null,2],['Étude de cas',null,3],['Test machine partie 1',null,5],['Test machine partie 2',null,2]]),
+D('R3.05','Programmation système'),D('R3.06','Architecture des réseaux'),D('R3.07','SQL et programmation'),D('R3.08','Probabilités'),D('R3.09','Cryptographie et sécurité'),D('R3.10','Management des SI'),
+D('R3.11','Droit des contrats et du numérique',null,[['Devoir surveillé n°1',null,1]]),D('R3.12','Anglais'),D('R3.13','Communication',null,[['TD1',null,1],['TD2',null,1]]),D('R3.14','PPP',null,[['Évaluation',null,1]]),
+D('AL.3.10','IA générative'),D('S3.Real.01',"SAÉ Développement d'une application")];
+const RM=Object.fromEntries(RES.map(r=>[r.id,r]));
+const UES=[
+{id:'UE3.1',n:"Réaliser un développement d'application",c:{'R3.01':15,'R3.02':10,'R3.03':12,'R3.04':15,'R3.11':8,'S3.Real.01':40}},
+{id:'UE3.2',n:'Optimiser des applications informatiques',c:{'R3.01':5,'R3.02':13,'R3.03':5,'R3.06':5,'R3.08':17,'R3.09':5,'R3.12':5,'S3.Real.01':40}},
+{id:'UE3.3',n:'Administrer des systèmes informatiques communicants complexes',c:{'R3.01':10,'R3.05':22,'R3.06':18,'R3.09':5,'R3.12':5,'S3.Real.01':40}},
+{id:'UE3.4',n:"Gérer des données de l'information",c:{'R3.01':10,'R3.07':25,'R3.08':5,'R3.09':5,'R3.10':5,'R3.11':10,'AL.3.10':7,'S3.Real.01':40}},
+{id:'UE3.5',n:'Conduire un projet',c:{'R3.03':10,'R3.04':10,'R3.10':5,'R3.11':10,'R3.12':7,'R3.13':7,'AL.3.10':12,'S3.Real.01':40}},
+{id:'UE3.6',n:'Travailler dans une équipe informatique',c:{'R3.04':5,'R3.10':10,'R3.12':8,'R3.13':10,'R3.14':15,'AL.3.10':11,'S3.Real.01':40}}];
+const KEY='notes-s3-v3';
+const synInit=()=>Object.fromEntries(RES.map(r=>[r.id,r.off]));
+const resInit=()=>Object.fromEntries(RES.map(r=>[r.id,{ev:r.ev.map(e=>[...e]),custom:false}]));
+const fresh=()=>({res:resInit(),syn:synInit(),c:Object.fromEntries(UES.map(u=>[u.id,{...u.c}])),link:false,sem:'3',view:'syn'});
+let S=null;try{S=JSON.parse(localStorage.getItem(KEY))}catch(e){}
+if(!S||!S.res||!S.syn||!S.c)S=fresh();
+const save=()=>{try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}};
+const $=id=>document.getElementById(id);
+const k=id=>id.replace(/\W/g,'_');
+const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const f=v=>v==null||isNaN(v)?'—':v.toFixed(2).replace('.',',');
+const num=v=>{if(v===''||v==null)return null;const n=parseFloat(String(v).replace(',','.'));return isNaN(n)?null:n};
+const clamp=v=>Math.min(20,Math.max(0,v));
+const E=1e-9;
+const col=v=>v==null?'var(--mute)':v>=10-E?'var(--ok)':v>=8-E?'var(--mid)':'var(--bad)';
+
+/* Mes notes : moyenne d'une matière à partir de ses évals */
+const detAvg=id=>{const r=RM[id],s=S.res[id];if(!s.custom&&r.off!=null)return r.off;let a=0,c=0;for(const[,n,w]of s.ev)if(n!=null&&w>0){a+=n*w;c+=w}return c?a/c:null};
+/* Synthèse : note de la matière (reliée ou non) */
+const locked=id=>S.link&&detAvg(id)!=null;
+const synNote=id=>locked(id)?detAvg(id):S.syn[id];
+const stat=u=>{let ks=0,kc=0,rc=0;const rest=[];for(const[id,w]of Object.entries(S.c[u.id])){if(!(w>0))continue;const a=synNote(id);if(a==null){rc+=w;rest.push(id)}else{ks+=a*w;kc+=w}}return{ks,kc,rc,rest,moy:kc?ks/kc:null}};
+const need=(s,T)=>s.rc?(T*(s.kc+s.rc)-s.ks)/s.rc:null;
+
+function renderUE(){
+  $('ues').innerHTML=UES.map(u=>`<div class="card ue"><div class="hd"><div><div class="id">${u.id}</div><h3>${esc(u.n)}</h3><span class="st" id="st-${k(u.id)}"></span></div><div class="moy" id="m-${k(u.id)}"></div></div>
+  <div class="track"><div class="fill" id="f-${k(u.id)}"></div><span class="mk"></span></div>
+  <div id="n-${k(u.id)}"></div>
+  <details><summary>Coefficients</summary><div class="coefs">${Object.keys(u.c).map(id=>`<label>${id} · ${esc(RM[id].n)}<input type="number" inputmode="decimal" min="0" step="1" data-ue="${u.id}" data-c="${id}" value="${S.c[u.id][id]??''}"></label>`).join('')}</div></details></div>`).join('');
+}
+function renderMat(){
+  $('mat').innerHTML=RES.map(r=>`<label class="mrow"><span class="nm">${r.id}<small>${esc(r.n)}</small></span><input type="number" inputmode="decimal" min="0" max="20" step="0.01" placeholder="—" data-syn="${r.id}"></label>`).join('');
+}
+function renderRes(extra){
+  const open=new Set([...document.querySelectorAll('#res details[open]')].map(d=>d.dataset.r));if(extra)open.add(extra);
+  $('res').innerHTML=RES.map(r=>{const s=S.res[r.id];return`<details class="res" data-r="${r.id}"${open.has(r.id)?' open':''}><summary><span class="nm">${r.id}<small>${esc(r.n)}</small></span><span class="tag" id="tag-${k(r.id)}"></span><span class="avg" id="avg-${k(r.id)}"></span></summary>
+  ${s.ev.length?`<div class="evh"><span>Évaluation</span><span>Note</span><span>Coef</span><span></span></div>`:'<p class="empty">Aucune évaluation</p>'}
+  ${s.ev.map((e,i)=>`<div class="ev"><input type="text" aria-label="Nom" data-r="${r.id}" data-i="${i}" data-f="0" value="${esc(e[0])}"><input type="number" inputmode="decimal" min="0" max="20" step="0.01" aria-label="Note" data-r="${r.id}" data-i="${i}" data-f="1" value="${e[1]??''}" placeholder="—"><input class="k" type="number" inputmode="decimal" min="0" step="0.5" aria-label="Coef" data-r="${r.id}" data-i="${i}" data-f="2" value="${e[2]??''}"><button class="x" aria-label="Supprimer" data-act="del" data-r="${r.id}" data-i="${i}">×</button></div>`).join('')}
+  <div class="row"><button data-act="add" data-r="${r.id}">+ Ajouter une évaluation</button>${s.custom?`<button data-act="reset" data-r="${r.id}">Réinitialiser</button>`:''}</div></details>`}).join('');
+}
+const list=ids=>ids.map(id=>id).join(', ');
+function needHtml(s){
+  if(!s.rc)return`<p class="need" style="color:var(--mute)">Toutes les matières ont une note.</p>`;
+  const n10=need(s,10),n8=need(s,8),who=`<span style="color:var(--mute)"> en ${list(s.rest)}</span>`;
+  if(n10<=0)return`<p class="need"><b>10 assuré</b>, même avec 0 sur le reste.</p>`;
+  if(n10>20)return`<p class="need"><b>10 impossible</b> sur cette UE.</p>`+(n8>20?`<p class="need">8 impossible aussi.</p>`:`<p class="need">Pour 8 : il te faut <b>${f(Math.max(0,n8))}</b> de moyenne${who}</p>`);
+  return`<p class="need">Pour 10 : il te faut <b>${f(n10)}</b> de moyenne${who}</p>`;
+}
+function update(){
+  document.querySelectorAll('[data-sem]').forEach(b=>b.setAttribute('aria-selected',b.dataset.sem===S.sem));
+  document.querySelectorAll('[data-view]').forEach(b=>b.setAttribute('aria-selected',b.dataset.view===S.view));
+  $('v3').hidden=S.sem!=='3';$('subtabs').hidden=S.sem!=='3';$('v4').hidden=S.sem!=='4';$('vsyn').hidden=S.view!=='syn';$('vnotes').hidden=S.view!=='notes';
+  $('link').checked=!!S.link;
+  document.querySelectorAll('[data-syn]').forEach(inp=>{const id=inp.dataset.syn,l=locked(id);inp.disabled=l;inp.title=l?'Vient de Mes notes':'';
+    if(document.activeElement!==inp){const v=synNote(id);inp.value=v==null?'':+v.toFixed(2)}});
+  RES.forEach(r=>{const a=detAvg(r.id),el=$('avg-'+k(r.id));el.textContent=f(a);$('tag-'+k(r.id)).textContent=S.res[r.id].custom?'modifié':''});
+  let ok=0,mid=0,bad=0,none=0;
+  UES.forEach(u=>{const s=stat(u),i=k(u.id),m=s.moy;
+    $('m-'+i).textContent=f(m);const st=$('st-'+i),sc=col(m);st.textContent=m==null?'Pas de note':m>=10-E?'À 10 ou plus':m>=8-E?'Entre 8 et 10':'Sous 8';st.style.background=`color-mix(in srgb,${sc} 26%,transparent)`;st.innerHTML=`<span class="dot" style="background:${sc}"></span>`+st.textContent;
+    $('f-'+i).style.width=(m==null?0:m/20*100)+'%';$('f-'+i).style.background=col(m);
+    $('n-'+i).innerHTML=needHtml(s);
+    if(m==null)none++;else if(m>=10-E)ok++;else if(m>=8-E)mid++;else bad++;});
+  $('cnt').innerHTML=`${ok}<small>/6</small>`;
+  const ch=(c,t,n)=>n?`<span class="chip"><span class="dot" style="background:${c}"></span>${n} ${t}</span>`:'';
+  $('chips').innerHTML=ch('var(--ok)','à 10 ou plus',ok)+ch('var(--mid)','entre 8 et 10',mid)+ch('var(--bad)','sous 8',bad)+ch('var(--mute)','sans note',none);
+}
+renderUE();renderMat();renderRes();update();
+
+document.body.addEventListener('input',e=>{const t=e.target,d=t.dataset;
+  if(t.id==='link')S.link=t.checked;
+  else if(d.syn){const v=num(t.value);S.syn[d.syn]=v==null?null:clamp(v)}
+  else if(d.c){const v=num(t.value);S.c[d.ue][d.c]=v==null?0:Math.max(0,v)}
+  else if(d.r&&d.f!=null){const s=S.res[d.r],i=+d.i;if(d.f==='0')s.ev[i][0]=t.value;else{const v=num(t.value);s.ev[i][+d.f]=v==null?null:(d.f==='1'?clamp(v):Math.max(0,v));s.custom=true}}
+  else return;
+  save();update();
+});
+document.body.addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;const d=b.dataset;
+  if(d.sem){S.sem=d.sem}
+  else if(d.view){S.view=d.view}
+  else if(b.id==='synReset'){S.syn=synInit()}
+  else if(b.id==='resReset'){S.res=resInit();renderRes()}
+  else if(d.act){const s=S.res[d.r];
+    if(d.act==='add')s.ev.push(['Nouvelle évaluation',null,1]);
+    if(d.act==='del')s.ev.splice(+d.i,1);
+    if(d.act==='reset'){s.ev=RM[d.r].ev.map(x=>[...x]);s.custom=false}
+    else s.custom=true;
+    renderRes(d.r)}
+  else return;
+  save();update();
+});
+}
+</script>
+</body>
+</html>
