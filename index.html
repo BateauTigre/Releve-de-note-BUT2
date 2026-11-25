@@ -334,6 +334,7 @@ const refresh=()=>{renderRes();update()};
 
 /* ---------- écran d'accueil ---------- */
 let signup=false;
+const frErr=m=>/rate limit/i.test(m||'')?"Trop d'emails envoyés par le site pour le moment. Réessaie dans une heure.":m==='Invalid login credentials'?'Email ou mot de passe incorrect.':/already registered/i.test(m||'')?'Un compte existe déjà avec cet email.':m;
 const gMsg=(t,err)=>{$('gMsg').textContent=t;$('gMsg').className='msg'+(t?(err?' err':' ok'):'')};
 const panes=['gChoice','gForm','gReset','gNew'];
 const showPane=id=>{$('gate').hidden=false;panes.forEach(p=>$(p).hidden=p!==id)};
@@ -362,14 +363,14 @@ $('gReset').addEventListener('submit',async e=>{e.preventDefault();const m=$('rM
   const email=$('rEmail').value.trim();if(!email){m.className='msg err';m.textContent='Mets ton email.';return}
   const btn=e.target.querySelector('button[type=submit]');btn.disabled=true;m.className='msg';m.textContent='Envoi…';
   try{const{error}=await sb.auth.resetPasswordForEmail(email,{redirectTo:location.origin+location.pathname});
-    m.className=error?'msg err':'msg ok';m.textContent=error?error.message:'Si un compte existe avec cet email, tu vas recevoir un lien. Pense à regarder tes spams.';
+    m.className=error?'msg err':'msg ok';m.textContent=error?frErr(error.message):'Si un compte existe avec cet email, tu vas recevoir un lien. Pense à regarder tes spams.';
   }catch(err){m.className='msg err';m.textContent='Impossible de joindre le serveur.'}
   btn.disabled=false;});
 $('gNew').addEventListener('submit',async e=>{e.preventDefault();const m=$('nMsg'),pass=$('nPass').value;
   if(pass.length<6){m.className='msg err';m.textContent='6 caractères minimum.';return}
   const btn=e.target.querySelector('button[type=submit]');btn.disabled=true;m.className='msg';m.textContent='Enregistrement…';
   try{const{data,error}=await sb.auth.updateUser({password:pass});
-    if(error){m.className='msg err';m.textContent=error.message;btn.disabled=false}
+    if(error){m.className='msg err';m.textContent=frErr(error.message);btn.disabled=false}
     else{$('nPass').value='';try{history.replaceState(null,'',location.pathname+location.search)}catch(e){}await enterUser(data.user)}
   }catch(err){m.className='msg err';m.textContent='Impossible de joindre le serveur.';btn.disabled=false}});
 $('gForm').addEventListener('submit',async e=>{e.preventDefault();
@@ -379,7 +380,7 @@ $('gForm').addEventListener('submit',async e=>{e.preventDefault();
   $('gSubmit').disabled=true;gMsg(signup?'Création du compte…':'Connexion…');
   try{
     const r=signup?await sb.auth.signUp({email,password}):await sb.auth.signInWithPassword({email,password});
-    if(r.error){gMsg(r.error.message==='Invalid login credentials'?'Email ou mot de passe incorrect.':r.error.message,true)}
+    if(r.error){gMsg(frErr(r.error.message),true)}
     else if(!r.data.session){gMsg('Compte créé. Valide le lien reçu par email, puis connecte-toi.');setSignup(false)}
     else{$('gPass').value='';await enterUser(r.data.session.user)}
   }catch(err){gMsg('Impossible de joindre le serveur.',true)}
